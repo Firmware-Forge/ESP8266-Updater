@@ -1,0 +1,22 @@
+{
+	"name": "FirmwareForge-ESP8266-Updater",
+	"description": "OTA updates using Firmware Forge for the ESP8266",
+	"keywords": "FirmwareForge, ESP8266, OTA, OTA-Updates",
+	"repository":{
+		"type": "git",
+		"url": "https://github.com/Firmware-Forge/ESP8266-Updater.git"
+	},
+	"authors":{
+		"name": "Patrick Shinn",
+		"email": "shinn5112@gmail.com",
+		"url": "https:patrick-shinn.com",
+		"maintainer": true
+  	},
+	"version": "0.1a",
+	"platforms": "espressif8266",
+	"frameworks": "arduino",
+	"dependencies":{
+		"name": "Crypto",
+		"frameworks": "arduino"
+	}
+}

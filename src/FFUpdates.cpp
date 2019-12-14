@@ -1,20 +1,53 @@
 #include "FFUpdates.h"
 #include <WiFiClientSecure.h>
 #include <ESP8266httpUpdate.h>
+#include <SHA256.h>
 
-FFUpdates::FFUpdates(String user_token){
+FFUpdates::FFUpdates(String user_token, String device_token){
     FFUpdates::user_token = user_token;
+    SHA256 token_hash;
+    uint8_t value[32];
+    String expect = ""; // wipe it for reuse
+
+    token_hash.reset();
+    token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
+    token_hash.update(device_token.c_str(), strlen(device_token.c_str()));
+    token_hash.finalize(value, 32);
+
+    for(int i = 0; i < 32; i ++){
+        if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
+        else expect += String(value[i], HEX);
+    }
+    FFUpdates::token_SHA256 = expect;
+    
 }
 
-FFUpdates::FFUpdates(String user_token, bool debug){
+FFUpdates::FFUpdates(String user_token, String device_token, bool debug){
     FFUpdates::user_token = user_token;
     FFUpdates::debug = debug;
+    SHA256 token_hash;
+    uint8_t value[32];
+    String expect = ""; // wipe it for reuse
+
+    token_hash.reset();
+    token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
+    token_hash.update(device_token.c_str(), strlen(device_token.c_str()));
+    token_hash.finalize(value, 32);
+
+    for(int i = 0; i < 32; i ++){
+        if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
+        else expect += String(value[i], HEX);
+    }
+    FFUpdates::token_SHA256 = expect;
 }
 
 FFUpdates::~FFUpdates(){
 
 }
 
+void FFUpdates::print_SHA256(){
+    Serial.println(FFUpdates::token_SHA256);
+}
 
 void FFUpdates::renewFingerprint(){
     WiFiClientSecure client;
@@ -56,38 +89,34 @@ void FFUpdates::renewFingerprint(){
         if(buffer.startsWith("token")){ 
             challenge_token = buffer.substring(7);
             challenge_token.remove(challenge_token.length() - 1);
-            Serial.println(FFUpdates::user_token);
             found++;
         }
         else if(buffer.startsWith("sha-1")){ 
             new_fingerprint = buffer.substring(7);
             new_fingerprint.remove(new_fingerprint.length() - 1);
-            Serial.println(new_fingerprint);
             found ++;
         }
         buffer = "";
         }
     }
 
-    if (FFUpdates::user_token == challenge_token){  // if the current user token equals the one the server replied with
+    if (FFUpdates::token_SHA256 == challenge_token){  // if the current token hash equals the one the server replied with
         Serial.println("Fingerprint updated!");     // update the fingerprint
         FFUpdates::fingerprint = new_fingerprint;
         if(FFUpdates::debug) Serial.println(fingerprint);
     }else{
-        Serial.println("An error occured :(");
-        Serial.println(FFUpdates::user_token.length());
-        Serial.println(challenge_token.length());
+        Serial.println("An error occured, the tokens do not match.");
+        if(FFUpdates::debug){
+            Serial.print("Challenge token: ");
+            Serial.println(challenge_token);
+            Serial.print("Excpected token: ");
+            Serial.println(FFUpdates::token_SHA256);
+        }
     }
 }
 
 void FFUpdates::update(){
-    WiFiClientSecure client;
-    client.setInsecure();
-    char fingerprintcopy[FFUpdates::fingerprint.length()];
-    FFUpdates::fingerprint.toCharArray(fingerprintcopy, FFUpdates::fingerprint.length());
-
     // test the connnection
-    
     t_httpUpdate_return ret = ESPhttpUpdate.update(FFUpdates::update_host,
                                         FFUpdates::https_port,
                                         FFUpdates::update_url,
