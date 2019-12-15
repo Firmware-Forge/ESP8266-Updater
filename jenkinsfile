@@ -21,9 +21,6 @@ pipeline{
                     }
                 }
                 sh '''
-                    git config user.email "shinnserver@gmail.com"
-                    git config user.name "Jenkins"
-
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
                     mv ESP8266-Updater ESP8266-Build                                 # will be used to build to docs
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
@@ -46,9 +43,19 @@ pipeline{
                     cd ./build/html
                     mv * "$deploy_dir"                                              # move all of the built docs to the deploy dir
                     cd "$deploy_dir"
+
+                    # setup git stuff
+                    git config user.email "shinnserver@gmail.com"
+                    git config user.name "Jenkins"
+
+                    # begin commiting
                     git add *
                     git commit -m "Deploying latest documentation"
-                   
+
+                    expect "Username"
+                    send "$(https_user)\n"
+                    expect "Password"
+                    send "$(https_password)\n"
                 '''
                 }
             }
