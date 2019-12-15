@@ -1,0 +1,11 @@
+pipeline{
+    agent docker {image: 'alpine:latest'}
+    stages{
+        stage('Deploy to Github Pages'){
+            steps{
+                sh 'project=$(pwd)'
+                sh 'echo $project'
+            }
+        }
+    }
+}
