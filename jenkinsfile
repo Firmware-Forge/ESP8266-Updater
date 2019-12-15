@@ -9,7 +9,8 @@ pipeline{
                 sh '''
                     build_dir=$(pwd)
                     cd .. // moves us out to clone the repo again.
-                    git clone git@github.com:Firmware-Forge/ESP8266-Updater.git
+                    mkdir test
+                    //git clone git@github.com:Firmware-Forge/ESP8266-Updater.git
                     cd ESP8266-Updater
                     deploy_dir=$(pwd)
                     git checkout gh-pages  // get the ready to deploy to github pages
