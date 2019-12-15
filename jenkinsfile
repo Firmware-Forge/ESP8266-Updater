@@ -31,7 +31,8 @@ pipeline{
                     cd ../
                     cd ESP8266-Deploy
                     git checkout gh-pages
-                    rm -r *                                                          # clean for docs deployment
+                    git rm -r *                                                       # clean for docs deployment
+                    ls
                     deploy_dir=$(pwd)
 
                     cd "$build_dir"
