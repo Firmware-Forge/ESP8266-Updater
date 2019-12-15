@@ -6,21 +6,23 @@ pipeline{
         stage('Deploy to Github Pages'){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'github_https', passwordVariable: 'https_password', usernameVariable: 'https_user')]) {
+                script { // this allows me to use a try catch block, try catch must be in script tags.
+                    try {
+                        sh 'rm -r *'
+                    } catch (Exception e) {
+                        sh 'echo "Empty directory"'
+                    }
+                }
+                script { // this allows me to use a try catch block, try catch must be in script tags.
+                    try {
+                        sh 'rm -r .*'
+                    } catch (Exception e) {
+                        sh 'echo "Even the hidden files are gone."'
+                    }
+                }
                 sh '''
+                    git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
                     ls
-                    build_dir=$(pwd)
-                    mkdir public           # place holder
-                    cd public
-                    git https://github.com/Firmware-Forge/ESP8266-Updater.git
-                    cd ESP8266-Updater
-                    deploy_dir=$(pwd)      # the real deploy dir
-                    git checkout gh-pages  # get the ready to deploy to github pages
-                    rm -r *                # clean the repo
-                    cd "$build_dir"        # go back to our build dir
-                    cd doxygen Doxyfile
-                    cd docs/sphinx
-                    make clean
-                    make html
                 '''
                 }
             }
