@@ -34,9 +34,10 @@ pipeline{
 
                     cd "$build_dir"
                     doxygen Doxyfile
-                    cd ./docs/sphinx
-                    make clean
-                    make html
+                    ls
+                    #cd ./docs/sphinx
+                    #make clean
+                    #make html
                 '''
                 }
             }
