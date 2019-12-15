@@ -1,6 +1,6 @@
 pipeline{
     agent{
-         docker {image: 'alpine:latest'}
+         docker {image 'alpine:latest'}
     }
     stages{
         stage('Deploy to Github Pages'){
