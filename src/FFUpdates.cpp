@@ -7,7 +7,7 @@ FFUpdates::FFUpdates(String user_token, String device_token){
     FFUpdates::user_token = user_token;
     SHA256 token_hash;
     uint8_t value[32];
-    String expect = ""; // wipe it for reuse
+    String expect = "";
 
     token_hash.reset();
     token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
@@ -81,7 +81,7 @@ void FFUpdates::renewFingerprint(){
 
     if(FFUpdates::debug) Serial.println(message); // what we got back from the server
     
-    int found = 0;
+    int found = 0; // lets us stop after each value has been located.
     for(unsigned int i = 0; i < message.length(); i++){
         if(found > 1) break;
         if (message[i] != '\n') buffer += message[i];
