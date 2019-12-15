@@ -5,12 +5,12 @@ pipeline{
     stages{
         stage('Deploy to Github Pages'){
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'Github_SSH_Key', keyFileVariable: 'ssh_file', passphraseVariable: 'ssh_pass', usernameVariable: 'ssh_user')]) {
+                withCredentials([usernamePassword(credentialsId: 'github_https', passwordVariable: 'https_password', usernameVariable: 'https_user')]) {
                 sh '''
                     build_dir=$(pwd)
                     mkdir public           # place holder
                     cd public
-                    git clone git@github.com:Firmware-Forge/ESP8266-Updater.git
+                    git https://github.com/Firmware-Forge/ESP8266-Updater.git
                     cd ESP8266-Updater
                     deploy_dir=$(pwd)      # the real deploy dir
                     git checkout gh-pages  # get the ready to deploy to github pages
