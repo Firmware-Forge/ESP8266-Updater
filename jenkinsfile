@@ -5,6 +5,7 @@ pipeline{
     stages{
         stage('Deploy to Github Pages'){
             steps{
+                sh 'uname -a'
                 sh 'project=$(pwd)'
                 sh 'echo $project'
             }
