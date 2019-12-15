@@ -7,11 +7,18 @@ pipeline{
             steps{
                 withCredentials([sshUserPrivateKey(credentialsId: 'Github_SSH_Key', keyFileVariable: 'ssh_file', passphraseVariable: 'ssh_pass', usernameVariable: 'ssh_user')]) {
                 sh '''
-                    sphinx-build --version
-                    doxygen --version
                     build_dir=$(pwd)
-                    echo "$build_dir"
-                    echo "$ssh_file"
+                    cd .. // moves us out to clone the repo again.
+                    git clone git@github.com:Firmware-Forge/ESP8266-Updater.git
+                    cd ESP8266-Updater
+                    deploy_dir=$(pwd)
+                    git checkout gh-pages  // get the ready to deploy to github pages
+                    rm -r * // clean the repo
+                    cd "$build_dir" // go back to our build dir
+                    cd doxygen Doxyfile
+                    cd docs/sphinx
+                    make clean
+                    make html
                 '''
                 }
             }
