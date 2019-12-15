@@ -1,15 +1,12 @@
 pipeline{
     agent{
-         docker {image 'alpine:latest'}
+         docker {image 'shinn5112/documentation:latest'}
     }
     stages{
         stage('Deploy to Github Pages'){
             steps{
-                sh 'su root'
-                sh 'apk update'
-                sh 'apk add python3'
-                sh 'project=$(pwd)'
-                sh 'echo $project'
+                sh 'sphinx-build --version'
+                sh 'doxygen --version'
             }
         }
     }
