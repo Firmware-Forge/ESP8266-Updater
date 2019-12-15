@@ -51,11 +51,13 @@ pipeline{
                     # begin commiting
                     git add *
                     git commit -m "Deploying latest documentation"
-                    git push
+                    spawn git push
                     expect "Username"
                     send "$(https_user)\n"
                     expect "Password"
                     send "$(https_password)\n"
+                    #interact
+                    #set timeout 30
                 '''
                 }
             }
