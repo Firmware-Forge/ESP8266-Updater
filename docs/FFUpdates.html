@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ESP8266 Updater &mdash; Firmware Forge ESP8266 Updater 0.1a documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/icon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How it Works" href="dataflow.html" />
+    <link rel="prev" title="Welcome to Firmware Forge ESP8266 Updater’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Firmware Forge ESP8266 Updater
+          
+
+          
+            
+            <img src="_static/icon.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ESP8266 Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataflow.html">How it Works</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Firmware Forge ESP8266 Updater</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ESP8266 Updater</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/FFUpdates.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="esp8266-updater">
+<h1>ESP8266 Updater<a class="headerlink" href="#esp8266-updater" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="_CPPv49FFUpdates">
+<span id="_CPPv39FFUpdates"></span><span id="_CPPv29FFUpdates"></span><span id="FFUpdates"></span><span class="target" id="class_f_f_updates"></span><em class="property">class </em><code class="sig-name descname">FFUpdates</code><a class="headerlink" href="#_CPPv49FFUpdates" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Provides an abstraction layer for the user to update their device. Piggy backs off of the ESP8266httpUpdate class. The additional functionality provided by this library includes handling changes made to the server’s ssl certificate fingerpint. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N9FFUpdates9FFUpdatesE6String6String">
+<span id="_CPPv3N9FFUpdates9FFUpdatesE6String6String"></span><span id="_CPPv2N9FFUpdates9FFUpdatesE6String6String"></span><span id="FFUpdates::FFUpdates__String.String"></span><span class="target" id="class_f_f_updates_1acd0ddc45a0132a3136a2459d9b17bae5"></span><code class="sig-name descname">FFUpdates</code><span class="sig-paren">(</span>String <em>user_token</em>, String <em>device_token</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdates9FFUpdatesE6String6String" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Default Constructor for the <a class="reference internal" href="#class_f_f_updates"><span class="std std-ref">FFUpdates</span></a> class.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_token</span></code>: The token provided to the user on their profile page.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_token</span></code>: The token provided to the user for the specific device, can be found on the devices page on the device’s card. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9FFUpdates9FFUpdatesE6String6Stringb">
+<span id="_CPPv3N9FFUpdates9FFUpdatesE6String6Stringb"></span><span id="_CPPv2N9FFUpdates9FFUpdatesE6String6Stringb"></span><span id="FFUpdates::FFUpdates__String.String.b"></span><span class="target" id="class_f_f_updates_1a1a3a2c07d6806b0f7ee4b6eeaf2a2105"></span><code class="sig-name descname">FFUpdates</code><span class="sig-paren">(</span>String <em>user_token</em>, String <em>device_token</em>, bool <em>debug</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdates9FFUpdatesE6String6Stringb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Debug Constructor for the <a class="reference internal" href="#class_f_f_updates"><span class="std std-ref">FFUpdates</span></a> class.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_token</span></code>: The token provided to the user on their profile page.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device_token</span></code>: The token provided to the user for the specific device, can be found on the devices page on the device’s card.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code>: Enables debugging if passed true. Provides more verbose output messages. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9FFUpdatesD0Ev">
+<span id="_CPPv3N9FFUpdatesD0Ev"></span><span id="_CPPv2N9FFUpdatesD0Ev"></span><span id="FFUpdates::~FFUpdates"></span><span class="target" id="class_f_f_updates_1a5be1e73947a50d1591dd2dc684a52c2b"></span><code class="sig-name descname">~FFUpdates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdatesD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9FFUpdates12print_SHA256Ev">
+<span id="_CPPv3N9FFUpdates12print_SHA256Ev"></span><span id="_CPPv2N9FFUpdates12print_SHA256Ev"></span><span id="FFUpdates::print_SHA256"></span><span class="target" id="class_f_f_updates_1aa0465bbd992c04479da9900f081ebdc6"></span>void <code class="sig-name descname">print_SHA256</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdates12print_SHA256Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the sha256 has that the device has calculated. Meant more for debugging than for user usage. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9FFUpdates16renewFingerprintEv">
+<span id="_CPPv3N9FFUpdates16renewFingerprintEv"></span><span id="_CPPv2N9FFUpdates16renewFingerprintEv"></span><span id="FFUpdates::renewFingerprint"></span><span class="target" id="class_f_f_updates_1acf97c6925218f8ede19c065e87efa9b8"></span>void <code class="sig-name descname">renewFingerprint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdates16renewFingerprintEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Asks the server for it’s ssl certificate’s sha1 fingerprint.</p>
+<p>The certificate will change every so often due to it expiring, in that event, the device needs to grab the new one so that it may communicate over https. To do this, the device will ask the serverfor its certificate fingerprint and for a challenge token. This token is the sha256 hash value of the device’s token combined with the device owner’s user token. Both the device and the server will know this value and can calculate it independent of one another. If the hash passed from the server matches what the device has calculated, the fingerprint is accepted and will be used to establish secure communicates with the authentic server.</p>
+<p>The user never needs to call this funciton directly, update will call it in the event that the fingerprint has changed. This function has been left as public so that the user can call this if they ever choose to, although there is really no reason to. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N9FFUpdates6updateEv">
+<span id="_CPPv3N9FFUpdates6updateEv"></span><span id="_CPPv2N9FFUpdates6updateEv"></span><span id="FFUpdates::update"></span><span class="target" id="class_f_f_updates_1a6c3da4ba09e37f958545f8e4885f2bde"></span>void <code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N9FFUpdates6updateEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Checks to see if there is an update available for the device. If there is, the update is downloaded and applied. Otherwise, its business as usual.</p>
+<p>The user is required to determine the update interval. For instance, if you want to check for an update 5 times an hour, then you would need to implement a clock function that calles update 5 times an hour. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dataflow.html" class="btn btn-neutral float-right" title="How it Works" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Firmware Forge ESP8266 Updater’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Firmware Forge 2019
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
