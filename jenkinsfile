@@ -24,8 +24,7 @@ pipeline{
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
                     mv ESP8266-Updater ESP8266-Build                                 # will be used to build to docs
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
-                    ls
-                    mv ESP8266-Updater mv ESP8266-Deploy                             # will be used to deploy them
+                    mv ESP8266-Updater ESP8266-Deploy                                # will be used to deploy them
 
                     cd ESP8266-Build
                     build_dir=$(pwd)
