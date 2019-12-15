@@ -8,8 +8,8 @@ pipeline{
                 withCredentials([sshUserPrivateKey(credentialsId: 'Github_SSH_Key', keyFileVariable: 'ssh_file', passphraseVariable: 'ssh_pass', usernameVariable: 'ssh_user')]) {
                 sh '''
                     build_dir=$(pwd)
-                    mkdir deploy_dir       # place holder
-                    cd deploy_dir
+                    mkdir public           # place holder
+                    cd public
                     git clone git@github.com:Firmware-Forge/ESP8266-Updater.git
                     cd ESP8266-Updater
                     deploy_dir=$(pwd)      # the real deploy dir
