@@ -2,8 +2,8 @@ pipeline{
     agent{
          docker {image 'shinn5112/documentation:latest'}
     }
-    withCredentials([sshUserPrivateKey(credentialsId: 'Github_SSH_Key', keyFileVariable: 'ssh_file', passphraseVariable: 'ssh_pass', usernameVariable: 'ssh_user')]) {
-        stages{
+    stages{
+        withCredentials([sshUserPrivateKey(credentialsId: 'Github_SSH_Key', keyFileVariable: 'ssh_file', passphraseVariable: 'ssh_pass', usernameVariable: 'ssh_user')]) {
             stage('Deploy to Github Pages'){
                 steps{
                     sh '''
@@ -11,7 +11,7 @@ pipeline{
                         doxygen --version
                         build_dir=$(pwd)
                         echo "$build_dir"
-                        echo "$ssh_file"
+                        echo "$ssh_user"
                     '''
                     
                 }
