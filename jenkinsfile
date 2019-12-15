@@ -21,6 +21,9 @@ pipeline{
                     }
                 }
                 sh '''
+                    git config --global user.email "shinnserver@gmail.com"
+                    git config --global user.name "Jenkins"
+
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
                     mv ESP8266-Updater ESP8266-Build                                 # will be used to build to docs
                     git clone https://github.com/Firmware-Forge/ESP8266-Updater.git
