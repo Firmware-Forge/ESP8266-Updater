@@ -5,7 +5,8 @@ pipeline{
     stages{
         stage('Deploy to Github Pages'){
             steps{
-                sh 'sudo apk add python3'
+                sh 'apk update'
+                sh 'apk add python3'
                 sh 'project=$(pwd)'
                 sh 'echo $project'
             }
