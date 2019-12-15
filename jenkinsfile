@@ -30,6 +30,7 @@ pipeline{
                     build_dir=$(pwd)
                     cd ../
                     cd ESP8266-Deploy
+                    rm -r *                                                          # clean for docs deployment
                     deploy_dir=$(pwd)
 
                     cd "$build_dir"
