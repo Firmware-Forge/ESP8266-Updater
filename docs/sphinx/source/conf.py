@@ -17,7 +17,7 @@ from datetime import datetime
 import subprocess
 
 # -- building doxygen xml file for sphinx ------------------------------------
-subprocess.call('cd ../../ ; doxygen', shell=True)
+subprocess.call('cd ../../../ ; doxygen', shell=True)
 
 
 # -- Project information -----------------------------------------------------
