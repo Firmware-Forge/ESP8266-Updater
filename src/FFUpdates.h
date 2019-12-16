@@ -45,7 +45,7 @@ class FFUpdates{
         FFUpdates(String user_token, String device_token, bool debug);
 
         /**
-         * Destructor.
+         * Destructor for the FFUpdates class.
          */
         ~FFUpdates();
 
