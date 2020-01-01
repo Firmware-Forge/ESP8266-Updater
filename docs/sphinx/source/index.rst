@@ -6,12 +6,15 @@
 Welcome to Firmware Forge ESP8266 Updater's documentation!
 ==========================================================
 
+Welcome and thank you for choosing Firmware Forge! To get started, please visit the getting started page.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   FFUpdates
+   getting_started
    dataflow
+   FFUpdates
 
 
 
