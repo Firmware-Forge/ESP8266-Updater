@@ -14,6 +14,7 @@ Welcome and thank you for choosing Firmware Forge! To get started, please visit 
 
    getting_started
    dataflow
+   advanced
    FFUpdates
 
 
