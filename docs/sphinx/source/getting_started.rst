@@ -12,7 +12,8 @@ Getting Updates
 
 Now that you have registerd your first device, you are ready to start using this library! Usage is pretty simple
 if you are using `platformio <https://platformio.org/>`_. All you will need to do is go to the libraries page, search for
-"Firmware Forge", and download the library. All of the dependencies will be handled by platformio. 
+"Firmware Forge", and download the library. All of the dependencies will be handled by platformio. You can also
+view the library in your browser `here <https://platformio.org/lib/show/6892/FirmwareForge-ESP8266-Updater/examples>`_.
 
 
 Usage is straight forward, you will declare the updater outside of the setup and loop functions:
