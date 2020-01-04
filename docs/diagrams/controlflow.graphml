@@ -15,7 +15,6 @@
   <graph edgedefault="directed" id="G">
     <data key="d0"/>
     <node id="n0">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
           <y:Geometry height="80.0" width="127.0" x="508.5" y="11.0"/>
@@ -33,14 +32,13 @@ called<y:LabelModel>
       </data>
     </node>
     <node id="n1">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.decision">
           <y:Geometry height="159.0" width="254.0" x="445.0" y="172.0"/>
           <y:Fill color="#E8EEF7" color2="#00CCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="193.0" x="30.5" y="63.53125">Can connect to Firmware Forge
-with known Fingerprint?
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="214.01171875" x="19.994140625" y="63.53125">Can we connect to Firmware Forge
+with using a known Fingerprint?
 <y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -52,7 +50,6 @@ with known Fingerprint?
       </data>
     </node>
     <node id="n2">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.decision">
           <y:Geometry height="144.0" width="283.0" x="832.0" y="172.0"/>
@@ -71,7 +68,6 @@ the server is sending us?<y:LabelModel>
       </data>
     </node>
     <node id="n3">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.process">
           <y:Geometry height="80.0" width="158.0" x="154.0" y="385.75"/>
@@ -88,7 +84,6 @@ the server is sending us?<y:LabelModel>
       </data>
     </node>
     <node id="n4">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.terminator">
           <y:Geometry height="91.0" width="152.0" x="760.5" y="412.0"/>
@@ -105,7 +100,6 @@ the server is sending us?<y:LabelModel>
       </data>
     </node>
     <node id="n5">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.terminator">
           <y:Geometry height="91.0" width="152.0" x="1028.0" y="412.0"/>
@@ -123,7 +117,6 @@ new firmware<y:LabelModel>
       </data>
     </node>
     <node id="n6">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.networkMessage">
           <y:Geometry height="86.0" width="189.0" x="138.5" y="520.5"/>
@@ -143,7 +136,6 @@ new firmware<y:LabelModel>
       </data>
     </node>
     <node id="n7">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.decision">
           <y:Geometry height="144.0" width="254.0" x="106.0" y="673.5"/>
@@ -162,7 +154,6 @@ calculated locally?<y:LabelModel>
       </data>
     </node>
     <node id="n8">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.process">
           <y:Geometry height="75.0" width="158.0" x="154.0" y="899.5"/>
@@ -180,13 +171,13 @@ using new fingerprint<y:LabelModel>
       </data>
     </node>
     <node id="n9">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.decision">
           <y:Geometry height="144.0" width="216.0" x="125.0" y="187.0"/>
           <y:Fill color="#E8EEF7" color2="#00CCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="148.802734375" x="33.5986328125" y="63.015625">Is this our first attempt?<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="31.9375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="142.43359375" x="36.783203125" y="56.03125">Is this our first attempt
+to connect recently?<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -197,7 +188,6 @@ using new fingerprint<y:LabelModel>
       </data>
     </node>
     <node id="n10">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.terminator">
           <y:Geometry height="57.0" width="141.0" x="-101.25" y="230.5"/>
@@ -215,7 +205,6 @@ try again later.<y:LabelModel>
       </data>
     </node>
     <node id="n11">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.terminator">
           <y:Geometry height="75.0" width="168.0" x="488.0" y="708.0"/>
@@ -234,7 +223,6 @@ and try again later.<y:LabelModel>
       </data>
     </node>
     <edge id="e0" source="n0" target="n1">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -244,7 +232,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e1" source="n1" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -262,7 +249,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e2" source="n2" target="n4">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -280,7 +266,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e3" source="n2" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -298,7 +283,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e4" source="n3" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -318,7 +302,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e5" source="n6" target="n7">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -336,7 +319,6 @@ and try again later.<y:LabelModel>
       </data>
     </edge>
     <edge id="e6" source="n7" target="n8">
-      <data key="d9"/>
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -353,25 +335,7 @@ and try again later.<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e7" source="n8" target="n0">
-      <data key="d9"/>
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-153.66666666666657" y="929.5"/>
-            <y:Point x="-153.66666666666657" y="679.0"/>
-            <y:Point x="-153.66666666666657" y="563.0"/>
-            <y:Point x="-153.66666666666657" y="348.0"/>
-            <y:Point x="-153.66666666666657" y="61.0"/>
-            <y:Point x="-60.22916666666666" y="51.0"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="e8" source="n1" target="n9">
-      <data key="d9"/>
+    <edge id="e7" source="n1" target="n9">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -388,8 +352,7 @@ and try again later.<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e9" source="n9" target="n3">
-      <data key="d9"/>
+    <edge id="e8" source="n9" target="n3">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -406,8 +369,7 @@ and try again later.<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e10" source="n9" target="n10">
-      <data key="d9"/>
+    <edge id="e9" source="n9" target="n10">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -424,8 +386,7 @@ and try again later.<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e11" source="n7" target="n11">
-      <data key="d9"/>
+    <edge id="e10" source="n7" target="n11">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -439,6 +400,20 @@ and try again later.<y:LabelModel>
             </y:ModelParameter>
             <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
           </y:EdgeLabel>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e11" source="n8" target="n0">
+      <data key="d9"/>
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="-195.96944444444415" y="937.0"/>
+            <y:Point x="-195.96944444444415" y="511.80555555555554"/>
+            <y:Point x="-195.96944444444415" y="51.0"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
         </y:QuadCurveEdge>
       </data>
     </edge>

@@ -3,14 +3,13 @@ Getting Started
 
 To get started with Firmware Forge, you will first need to create an account. Please visit
 `<https://firmwareforge.com>`_ and register. Once your email address is confirmed and you have logged in,
-visit the user guide tab on the home page. This guide will walk you through the steps of setting up your account
-and adding your first device. Once you have added your first device, come back to this guide for instructions on
-how to use the updater library.
+visit the user guide tab on the home page. This guide will walk you through the steps of setting up your account.
 
-Getting Updates
----------------
 
-Now that you have registerd your first device, you are ready to start using this library! Usage is pretty simple
+Creating Your First Firmware
+----------------------------
+
+Now that you have registerd, you are ready to start using this library! Usage is pretty simple
 if you are using `platformio <https://platformio.org/>`_. All you will need to do is go to the libraries page, search for
 "Firmware Forge", and download the library. All of the dependencies will be handled by platformio. You can also
 view the library in your browser `here <https://platformio.org/lib/show/6892/FirmwareForge-ESP8266-Updater/examples>`_.
@@ -73,3 +72,38 @@ Below is a complete example that checks for an update every 5 seconds.
         updater.update(); // check for an update, apply it if one exists.
         delay(5000);
     }
+
+
+Adding Your Firmware
+--------------------
+
+Now that you have created your firmware, you are upload it. Firmware Forge only accepts compiled binary files,
+so you will need to compile it locally. Compile you firmware, then upload the .bin file that is created (this can be found in
+the .pio folder under builds within your project if you are using platformio). To upload, login it to your account, click the firmware tab, then add firmware.
+You will be presented with a modal asking you to create a new firmware. Once you provide a name and a description, save it. You now have a firmware, but
+you need to add a version of it to use it. Edit the firmware by clicking on the edit icon (the little pencil) on your firmware card. You now have the option
+to add a version, go ahead and click it. You will then be able to add a version name, a description, and the binary file.
+
+What's a Variant?
+^^^^^^^^^^^^^^^^^
+
+A firmware version variant is used sematically to help you keep things organized. Lets say that you have two climate sensors that you would like to
+manage using Firmware Forge that will be running the same software, but with some minor settings changes like an MQTT topic to publish to. The devices are running
+different firmware versions due to the changes, but essentially only have different settings. This is where variants come in to play. A firmware version can have different variants so that you
+do not need to create a new firmware version for each device that is running a firmware with different settings at compile time. This allows you to maintain
+a sematically sound versioning scheme while still being able to tweak each devices settings to fit your needs.
+
+Adding Your Device
+------------------
+
+Now that you have a firmware ready to load, it is time to add your device. Click on the devices tab, then add new device. You will be asked for your device'settings
+MAC, a name, and a description. You will then be able to select a previously uploaded firmware from the drop downs.
+
+
+Getting the First Update
+------------------------
+
+The first time you use Firmware Forge, you will need to upload the firmware to the device manually. After that, you will be able to update the device
+using the web interface. You will notice that on your device's card on the devices page that there is a time stamp from when it was last updated, and 
+an up to date indicator. These indicators let you know when you device last checked for an update, and if it is currently considered up to date. If you
+refresh the page after your device is powered on and has asked for an update, you will see these values change.

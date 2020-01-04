@@ -6,7 +6,9 @@ the user token and device token, this hash is used to prove the
 authenticity of the server when we request a new ssl certificate
 fingerprint from the server. When the server's certificate is 
 renewed or the device is powered on, the process of getting the 
-server's fingerprint is called upon. The hash is transmitted from the server
+server's fingerprint is called upon. 
+
+The hash is transmitted from the server
 after being encrypted using AES with the device token as the key,
 preventing a third party from knowing and using the hash to trick
 your device. Pending that the decrypted hash matches what the 
@@ -23,7 +25,7 @@ updates as frequently or infrequently as the user wishes, it is up to the
 user to call the update function at the desired time intervals. Below is
 a diagram to visualize the update process.
 
-.. figure:: _static/update.png
+.. figure:: _static/update.svg
    :alt: Update function control flow diagram
 
    Update Function Control Flow Diagram
