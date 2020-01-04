@@ -18,11 +18,11 @@
 	"dependencies":[
 		{
 			"name": "Crypto",
-			"frameworks": "espressif8266"
+			"frameworks": "arduino"
 		},
 		{
 			"name": "tiny-AES-c",
-			"frameworks": "espressif8266"
+			"frameworks": "arduino"
 		}
 	],
 	"export": {
