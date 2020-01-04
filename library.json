@@ -22,7 +22,7 @@
 		},
 		{
 			"name": "tiny-AES-c",
-			"frameworks": "espressif8266"
+			"frameworks": "arduino"
 		}
 	],
 	"export": {
