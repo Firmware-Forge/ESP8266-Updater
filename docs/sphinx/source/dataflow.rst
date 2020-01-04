@@ -25,7 +25,7 @@ updates as frequently or infrequently as the user wishes, it is up to the
 user to call the update function at the desired time intervals. Below is
 a diagram to visualize the update process.
 
-.. figure:: _static/update.svg
+.. figure:: _static/update.png
    :alt: Update function control flow diagram
 
    Update Function Control Flow Diagram
