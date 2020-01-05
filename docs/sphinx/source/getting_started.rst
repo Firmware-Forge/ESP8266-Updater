@@ -5,7 +5,6 @@ To get started with Firmware Forge, you will first need to create an account. Pl
 `<https://firmwareforge.com>`_ and register. Once your email address is confirmed and you have logged in,
 visit the user guide tab on the home page. This guide will walk you through the steps of setting up your account.
 
-
 Creating Your First Firmware
 ----------------------------
 
@@ -14,6 +13,22 @@ if you are using `platformio <https://platformio.org/>`_. All you will need to d
 "Firmware Forge", and download the library. All of the dependencies will be handled by platformio. You can also
 view the library in your browser `here <https://platformio.org/lib/show/6892/FirmwareForge-ESP8266-Updater/examples>`_.
 
+
+Getting Your Tokens
+^^^^^^^^^^^^^^^^^^^
+
+Before you can write your firmwware, you will need your device and user tokens. Your user token is specific to you,
+your device token is specific to each device you regsiter. To get your user token, go to your profile by clicking on
+your name from within Firmware Forge after you have logged in.
+
+To get your device token go to the devices tab and create a new device. Since you haven't uploaded any firmware before,
+you can ignore the firmware fields when creating your device. Just grab the token and we will come back to assign the firmware
+later. You will need to provide a MAC, a name, and a description for your device.
+
+
+
+Writing the Firmware
+^^^^^^^^^^^^^^^^^^^^
 
 Usage is straight forward, you will declare the updater outside of the setup and loop functions:
 
@@ -93,11 +108,11 @@ different firmware versions due to the changes, but essentially only have differ
 do not need to create a new firmware version for each device that is running a firmware with different settings at compile time. This allows you to maintain
 a sematically sound versioning scheme while still being able to tweak each devices settings to fit your needs.
 
-Adding Your Device
-------------------
+Updating Your Device
+--------------------
 
-Now that you have a firmware ready to load, it is time to add your device. Click on the devices tab, then add new device. You will be asked for your device'settings
-MAC, a name, and a description. You will then be able to select a previously uploaded firmware from the drop downs.
+Now that you have a firmware ready to load, it is time to add your device. Click on the devices tab, then edit the device you created earlier. 
+You will then be able to select a previously uploaded firmware from the drop downs.
 
 
 Getting the First Update
