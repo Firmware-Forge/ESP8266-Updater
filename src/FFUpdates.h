@@ -22,18 +22,13 @@ class FFUpdates{
     public:
 
         /**
-         * Default Constructor for the FFUpdates class.
-         * 
-         * @param user_token
-         *        The token provided to the user on their profile page.
-         *        
-         * @param device_token
-         *        The token provided to the user for the specific device, can be found on the devices page on the device's card.
+         * Default Constructor for the FFUpdates class. Creates the object but does not intialize any data.
+         * Requires the user to provide the token_SHA256 and user_token via the set methods.
          */
-        FFUpdates(String user_token, String device_token);
+        FFUpdates();
 
         /**
-         * Debug Constructor for the FFUpdates class.
+         *  Basic Constructor for the FFUpdates class, initializes object data such as token_SHA256.
          *
          * @param user_token
          *        The token provided to the user on their profile page.
@@ -41,10 +36,8 @@ class FFUpdates{
          * @param device_token
          *        The token provided to the user for the specific device, can be found on the devices page on the device's card.
          * 
-         * @param debug
-         *        Enables debugging if passed true. Provides more verbose output messages.
          */
-        FFUpdates(String user_token, String device_token, bool debug);
+        FFUpdates(String user_token, String device_token);
 
         /**
          * Destructor for the FFUpdates class.
@@ -52,9 +45,81 @@ class FFUpdates{
         ~FFUpdates();
 
         /**
+         * Enable/disable debug.
+         * 
+         * @param debug
+         *        enable or disable debugging by passing true or false respectively.
+         */ 
+        void enable_debug(bool debug);
+
+        /**
+         * Returns the user token. 
+         * 
+         * @return the stored user token.
+         */
+        String get_user_token();
+
+        /**
+         * Sets the user token.
+         */ 
+        void set_user_token(String user_token);
+
+        /**
+         * Gets the device token.
+         * 
+         * @return device token
+         */ 
+        String get_device_token();
+
+        /**
+         * Sets the device token.
+         */ 
+        void set_device_token(String device_token);
+
+        /**
+         * Returns the token_SHA256 hash.
+         * 
+         * @return the stored token hash.
+         */
+        String get_token_SHA256();
+
+        /**
+         * Sets the token_SHA256 hash.
+         */ 
+        void set_token_SHA256(String user_token);
+
+        /**
          * Prints the sha256 has that the device has calculated. Meant more for debugging than for user usage.
          */
         void print_SHA256();
+
+        /**
+         * Gets the encryption key. Please note that you should iterate through this pointer and store the values
+         * as a byte array. Storing this pointer in memory will not preserve the data through a reset as the 
+         * pointer will be pointing to empty memory. The length of the key is 17.
+         * 
+         * @return encryption key pointer
+         */
+        byte* get_encryption_key();
+
+        /**
+         * Sets the encryption key.
+         * 
+         * @param key byte array pointer.
+         */
+        void set_encryption_key(byte* key);
+
+        /**
+         * Gets the stored server fingerprint. 
+         * 
+         * @return the stored fingerprint.
+         */
+        String get_fingerprint();
+
+        /**
+         * Sets the current server fingerprint.
+         */ 
+        void set_fingerprint(String user_token);
 
         /**
          * Asks the server for it's ssl certificate's sha1 fingerprint.

@@ -4,6 +4,12 @@
 #include <SHA256.h>
 #include <aes.hpp>
 
+FFUpdates::FFUpdates(){
+  FFUpdates::user_token = "Not Set";
+  FFUpdates::device_token = "Not Set";
+  FFUpdates::token_SHA256 = "Not Set";
+}
+
 FFUpdates::FFUpdates(String user_token, String device_token){
     FFUpdates::user_token = user_token;
     FFUpdates::device_token = device_token;
@@ -28,34 +34,53 @@ FFUpdates::FFUpdates(String user_token, String device_token){
     device_token.toCharArray((char*)&key, device_token.length() + 1);
 }
 
-FFUpdates::FFUpdates(String user_token, String device_token, bool debug){
-    FFUpdates::user_token = user_token;
-    FFUpdates::device_token = device_token;
-    FFUpdates::debug = debug;
-    SHA256 token_hash;
-    uint8_t value[32];
-    String expect = ""; // wipe it for reuse
-
-    token_hash.reset();
-    token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
-    token_hash.update(device_token.c_str(), strlen(device_token.c_str()));
-    token_hash.finalize(value, 32);
-
-    for(int i = 0; i < 8; i ++){ // there are 32 values, but we only use the first 16 due to the encryption size limitations.
-        if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
-        else expect += String(value[i], HEX);
-    }
-    FFUpdates::token_SHA256 = expect;
-
-    // create the encryption key
-    device_token = ""; // wipe this for reuse
-    for(int i = 0; i < 16; i++) device_token += FFUpdates::device_token[i]; // get the first 16 chars
-    device_token.toCharArray((char*)&key, device_token.length() + 1);
-}
-
 FFUpdates::~FFUpdates(){
-
+    //todo implement?
 }
+
+void FFUpdates::enable_debug(bool debug){
+    FFUpdates::debug = debug;
+}
+
+String FFUpdates::get_user_token(){
+    return FFUpdates::user_token;
+}
+
+void FFUpdates::set_user_token(String user_token){
+    FFUpdates::user_token = user_token;
+}
+
+String FFUpdates::get_device_token(){
+    return FFUpdates::device_token;
+}
+
+void FFUpdates::set_device_token(String device_token){
+    FFUpdates::device_token = device_token;
+}
+
+String FFUpdates::get_token_SHA256(){
+    return FFUpdates::token_SHA256;
+}
+
+void FFUpdates::set_token_SHA256(String token_SHA256){
+    FFUpdates::token_SHA256 = token_SHA256;
+}
+
+String FFUpdates::get_fingerprint(){
+    return FFUpdates::fingerprint;
+}
+
+void FFUpdates::set_fingerprint(String fingerprint){
+    FFUpdates::fingerprint = fingerprint;
+}
+
+byte* FFUpdates::get_encryption_key(){
+            return key;
+}
+
+void FFUpdates::set_encryption_key(byte* key){
+    for(int i = 0; i < 17; i ++) FFUpdates::key[i] = key[i];
+} 
 
 void FFUpdates::print_SHA256(){
     Serial.println(FFUpdates::token_SHA256);
@@ -140,11 +165,11 @@ void FFUpdates::renewFingerprint(){
     AES_CBC_decrypt_buffer(&ctx, challenge_token_int, 16);
 
     challenge_token = ""; // wipe and populate with the decrypted value
-    for(uint i = 0; i < 17; i++){
+    for(uint i = 0; i < 16; i++){
             char current = (char)challenge_token_int[i];
             if(isControl(current) || !isPrintable(current)) break;
             else challenge_token += current;
-        }
+    }
 
     if (FFUpdates::token_SHA256 == challenge_token){  // if the current token hash equals the one the server replied with
         Serial.println("Fingerprint updated!");     // update the fingerprint
@@ -190,11 +215,10 @@ void FFUpdates::update(){
         }
         break;
     case HTTP_UPDATE_NO_UPDATES:
-        Serial.println("No update needed..");
+        Serial.println("No update needed.");
         break;
     case HTTP_UPDATE_OK:
         Serial.println("[update] Update ok."); // may not be called since we reboot the ESP
         break;
     }
 }
-
