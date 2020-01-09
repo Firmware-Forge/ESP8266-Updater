@@ -41,11 +41,10 @@ install:
     - platformio update
     - platformio lib install
 
-script: pwd
-
 jobs:
   include:
     - stage: test
+      script: pwd
       script: echo "test"
       script: pio test
     - stage: build
