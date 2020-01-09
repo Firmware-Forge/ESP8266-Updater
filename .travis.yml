@@ -41,5 +41,9 @@ install:
     - platformio update
     - platformio lib install
 
-script:
-    - pwd
+jobs:
+  include:
+    - stage: test
+      script: echo "test"
+    - stage: build
+      script: "build"
