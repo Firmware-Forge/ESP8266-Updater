@@ -31,8 +31,11 @@
 			"examples"
 		],
 		"exclude":[
+			"test",
 			"docs",
 			"Doxyfile",
+			"platform.ini",
+			".travis.yml",
 			".readthedocs.yml",
 			".gitignore"
 		]
