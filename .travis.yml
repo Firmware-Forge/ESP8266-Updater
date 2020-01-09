@@ -26,7 +26,7 @@ branches:
 
 language: python
 python:
-    - "2.7"
+    - "3.7"
 
 sudo: false
 cache:
@@ -39,6 +39,7 @@ env:
 install:
     - pip install -U platformio
     - platformio update
+    - platformio lib install
 
 script:
-    - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
+    - pwd
