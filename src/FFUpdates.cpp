@@ -4,15 +4,11 @@
 #include <SHA256.h>
 #include "aes.hpp"
 
-FFUpdates::FFUpdates(){
-  FFUpdates::user_token = "Not Set";
-  FFUpdates::device_token = "Not Set";
-  FFUpdates::token_SHA256 = "Not Set";
+FFUpdates::FFUpdates() : user_token{"Not Set"}, device_token{"Not Set"}, token_SHA256{"Not Set"}{
+  // do nothing, variables are initialized in the initialization list
 }
 
-FFUpdates::FFUpdates(String user_token, String device_token){
-    FFUpdates::user_token = user_token;
-    FFUpdates::device_token = device_token;
+FFUpdates::FFUpdates(String user_token, String device_token) : user_token{user_token}, device_token{device_token}{
     SHA256 token_hash;
     uint8_t value[32];
     String expect = ""; // wipe it for reuse
