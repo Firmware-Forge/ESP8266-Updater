@@ -43,4 +43,4 @@ jobs:
   include:
     - stage: build
       script: echo "build"
-      script: pio ci -c platformio.ini examples/example.cpp
+      script: pio ci -c platformio.ini -c platformio.ini examples/example.cpp
