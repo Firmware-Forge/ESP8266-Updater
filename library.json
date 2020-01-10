@@ -31,7 +31,6 @@
 			"examples"
 		],
 		"exclude":[
-			"test",
 			"docs",
 			"Doxyfile",
 			"platform.ini",

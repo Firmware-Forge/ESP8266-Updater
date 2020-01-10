@@ -33,8 +33,6 @@ cache:
     directories:
         - "~/.platformio"
 
-env:
-    - PLATFORMIO_CI_SRC=./test/FFUpdates_tests.cpp
 
 install:
     - pip install -U platformio
@@ -43,10 +41,6 @@ install:
 
 jobs:
   include:
-    - stage: test
-      script: pwd
-      script: echo "test"
-      script: pio test
     - stage: build
       script: echo "build"
       script: pio ci -c platformio.ini examples/example.cpp
