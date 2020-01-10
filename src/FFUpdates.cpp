@@ -4,18 +4,18 @@
 #include <SHA256.h>
 #include "aes.hpp"
 
-FFUpdates::FFUpdates() : user_token{"Not Set"}, device_token{"Not Set"}, token_SHA256{"Not Set"}{
+FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SHA256{"Not Set"}{
   // do nothing, variables are initialized in the initialization list
 }
 
-FFUpdates::FFUpdates(String user_token, String device_token) : user_token{user_token}, device_token{device_token}{
+FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_token}, user_secret{user_secret}{
     SHA256 token_hash;
     uint8_t value[32];
     String expect = ""; // wipe it for reuse
 
     token_hash.reset();
     token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
-    token_hash.update(device_token.c_str(), strlen(device_token.c_str()));
+    token_hash.update(user_secret.c_str(), strlen(user_secret.c_str()));
     token_hash.finalize(value, 32);
 
     for(int i = 0; i < 32; i ++){ // there are 32 values, but we process two at a time
@@ -25,9 +25,9 @@ FFUpdates::FFUpdates(String user_token, String device_token) : user_token{user_t
     FFUpdates::token_SHA256 = expect;
 
     // create the encryption key
-    device_token = ""; // wipe this for reuse
-    for(int i = 0; i < 32; i++) device_token += FFUpdates::device_token[i]; // get the first 32 chars
-    device_token.toCharArray((char*)&key, device_token.length() + 1);
+    user_secret = ""; // wipe this for reuse
+    for(int i = 0; i < 32; i++) user_secret += FFUpdates::user_secret[i]; // get the first 32 chars
+    user_secret.toCharArray((char*)&key, user_secret.length() + 1);
 }
 
 FFUpdates::~FFUpdates(){
@@ -46,12 +46,12 @@ void FFUpdates::set_user_token(String user_token){
     FFUpdates::user_token = user_token;
 }
 
-String FFUpdates::get_device_token(){
-    return FFUpdates::device_token;
+String FFUpdates::get_user_secret(){
+    return FFUpdates::user_secret;
 }
 
-void FFUpdates::set_device_token(String device_token){
-    FFUpdates::device_token = device_token;
+void FFUpdates::set_user_secret(String user_secret){
+    FFUpdates::user_secret = user_secret;
 }
 
 String FFUpdates::get_token_SHA256(){

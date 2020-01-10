@@ -9,7 +9,7 @@
 class FFUpdates{
     private:
         String user_token;
-        String device_token;
+        String user_secret;
         String fingerprint = "";
         String token_SHA256;
         byte key[33];
@@ -33,11 +33,11 @@ class FFUpdates{
          * @param user_token
          *        The token provided to the user on their profile page.
          *        
-         * @param device_token
+         * @param user_secret
          *        The token provided to the user for the specific device, can be found on the devices page on the device's card.
          * 
          */
-        FFUpdates(String user_token, String device_token);
+        FFUpdates(String user_token, String user_secret);
 
         /**
          * Destructor for the FFUpdates class.
@@ -69,12 +69,12 @@ class FFUpdates{
          * 
          * @return device token
          */ 
-        String get_device_token();
+        String get_user_secret();
 
         /**
          * Sets the device token.
          */ 
-        void set_device_token(String device_token);
+        void set_user_secret(String user_secret);
 
         /**
          * Returns the token_SHA256 hash.
@@ -127,7 +127,7 @@ class FFUpdates{
          * The certificate will change every so often due to it expiring, in that event,
          * the device needs to grab the new one so that it may communicate over https. To do this,
          * the device will ask the serverfor its certificate fingerprint and for a challenge token. This token
-         * is the sha256 hash value of the device's token combined with the device owner's user token. Both the device
+         * is the sha256 hash value of the device owner's user secret combined with the device owner's user token. Both the device
          * and the server will know this value and can calculate it independent of one another. If the hash passed
          * from the server matches what the device has calculated, the fingerprint is accepted and will be used to establish
          * secure communicates with the authentic server. This hash is transmitted in encrypted form using AES256 in CBC mode.
