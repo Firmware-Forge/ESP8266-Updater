@@ -12,11 +12,11 @@ class FFUpdates{
         String device_token;
         String fingerprint = "";
         String token_SHA256;
-        byte key[17];
-        const char* update_host = "firmwareforge.com";
+        byte key[33];
+        const char* update_host = "firmwareforge.com";             
         const char* update_url = "/devices/update";
         const char* finger_url = "/devices/fingerprint";
-        const int https_port = 443;
+        const int https_port = 443;                          
         bool debug = false;
         
     public:
@@ -130,7 +130,7 @@ class FFUpdates{
          * is the sha256 hash value of the device's token combined with the device owner's user token. Both the device
          * and the server will know this value and can calculate it independent of one another. If the hash passed
          * from the server matches what the device has calculated, the fingerprint is accepted and will be used to establish
-         * secure communicates with the authentic server. This hash is transmitted in encrypted form using AES128 in CBC mode.
+         * secure communicates with the authentic server. This hash is transmitted in encrypted form using AES256 in CBC mode.
          * 
          * The user never needs to call this funciton directly, update will call it in the event that the fingerprint has changed.
          * This function has been left as public so that the user can call this if they ever choose to, although there is really no
