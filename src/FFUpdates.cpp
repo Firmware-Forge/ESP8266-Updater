@@ -2,36 +2,32 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266httpUpdate.h>
 #include <SHA256.h>
-#include <aes.hpp>
+#include "aes.hpp"
 
-FFUpdates::FFUpdates(){
-  FFUpdates::user_token = "Not Set";
-  FFUpdates::device_token = "Not Set";
-  FFUpdates::token_SHA256 = "Not Set";
+FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SHA256{"Not Set"}{
+  // do nothing, variables are initialized in the initialization list
 }
 
-FFUpdates::FFUpdates(String user_token, String device_token){
-    FFUpdates::user_token = user_token;
-    FFUpdates::device_token = device_token;
+FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_token}, user_secret{user_secret}{
     SHA256 token_hash;
     uint8_t value[32];
     String expect = ""; // wipe it for reuse
 
     token_hash.reset();
     token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
-    token_hash.update(device_token.c_str(), strlen(device_token.c_str()));
+    token_hash.update(user_secret.c_str(), strlen(user_secret.c_str()));
     token_hash.finalize(value, 32);
 
-    for(int i = 0; i < 8; i ++){ // there are 32 values, but we only use the first 16 due to the encryption size limitations.
+    for(int i = 0; i < 32; i ++){ // there are 32 values, but we process two at a time
         if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
         else expect += String(value[i], HEX);
     }
     FFUpdates::token_SHA256 = expect;
 
     // create the encryption key
-    device_token = ""; // wipe this for reuse
-    for(int i = 0; i < 16; i++) device_token += FFUpdates::device_token[i]; // get the first 16 chars
-    device_token.toCharArray((char*)&key, device_token.length() + 1);
+    user_secret = ""; // wipe this for reuse
+    for(int i = 0; i < 32; i++) user_secret += FFUpdates::user_secret[i]; // get the first 32 chars
+    user_secret.toCharArray((char*)&key, user_secret.length() + 1);
 }
 
 FFUpdates::~FFUpdates(){
@@ -50,12 +46,12 @@ void FFUpdates::set_user_token(String user_token){
     FFUpdates::user_token = user_token;
 }
 
-String FFUpdates::get_device_token(){
-    return FFUpdates::device_token;
+String FFUpdates::get_user_secret(){
+    return FFUpdates::user_secret;
 }
 
-void FFUpdates::set_device_token(String device_token){
-    FFUpdates::device_token = device_token;
+void FFUpdates::set_user_secret(String user_secret){
+    FFUpdates::user_secret = user_secret;
 }
 
 String FFUpdates::get_token_SHA256(){
@@ -87,16 +83,16 @@ void FFUpdates::print_SHA256(){
 }
 
 void FFUpdates::renewFingerprint(){
-    WiFiClientSecure client;
-   String message, buffer, challenge_token, new_fingerprint, iv;
-    byte iv_int[17], challenge_token_int[17]; // the strings are 16 chars long, but save a space for the null terminator
+    WiFiClientSecure client; 
+    String message, buffer, challenge_token, new_fingerprint, iv;
+    byte iv_int[33], challenge_token_int[65]; // the strings are 32 and 64 chars long, but save a space for the null terminator
 
     if(FFUpdates::debug){
         Serial.print("connecting to ");
         Serial.println(FFUpdates::update_host);
     }
     
-    client.setInsecure(); // allows us to connect without verifying the fingerprint.
+    client.setInsecure(); // allows us to connect without verifying the fingerprint.   // UNCOMMENT
     if (!client.connect(FFUpdates::update_host, FFUpdates::https_port)) {
         Serial.println("connection failed");
         return; // we failed, nothing else to do.
@@ -162,10 +158,10 @@ void FFUpdates::renewFingerprint(){
     // decrypt the message
     AES_ctx ctx;
     AES_init_ctx_iv(&ctx, FFUpdates::key, iv_int);
-    AES_CBC_decrypt_buffer(&ctx, challenge_token_int, 16);
+    AES_CBC_decrypt_buffer(&ctx, challenge_token_int, 64);
 
     challenge_token = ""; // wipe and populate with the decrypted value
-    for(uint i = 0; i < 16; i++){
+    for(uint i = 0; i < 64; i++){
             char current = (char)challenge_token_int[i];
             if(isControl(current) || !isPrintable(current)) break;
             else challenge_token += current;

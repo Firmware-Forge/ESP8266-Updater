@@ -12,16 +12,12 @@
 		"url": "https://patrick-shinn.com",
 		"maintainer": true
   	},
-	"version": "0.21a",
+	"version": "0.3a",
 	"platforms": "espressif8266",
 	"frameworks": "arduino",
 	"dependencies":[
 		{
 			"name": "Crypto",
-			"frameworks": "arduino"
-		},
-		{
-			"name": "tiny-AES-c",
 			"frameworks": "arduino"
 		}
 	],

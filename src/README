@@ -1,0 +1,5 @@
+All credit for AES library goes to Github user kokke (https://github.com/kokke)
+The original repo can be found here https://github.com/kokke/tiny-AES-c
+
+The only reason it is packed with Firmware Forge ESP8266 Updater is because a header file must be modified
+from this library to enable AES256, which FFUpdates needs.
