@@ -18,7 +18,7 @@ FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_to
     token_hash.update(user_secret.c_str(), strlen(user_secret.c_str()));
     token_hash.finalize(value, 32);
 
-    for(int i = 0; i < 32; i ++){ // there are 32 values, but we process two at a time
+    for(int i = 0; i < 32; i ++){
         if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
         else expect += String(value[i], HEX);
     }
@@ -71,11 +71,11 @@ void FFUpdates::set_fingerprint(String fingerprint){
 }
 
 byte* FFUpdates::get_encryption_key(){
-            return key;
+    return key;
 }
 
 void FFUpdates::set_encryption_key(byte* key){
-    for(int i = 0; i < 17; i ++) FFUpdates::key[i] = key[i];
+    for(int i = 0; i < 33; i ++) FFUpdates::key[i] = key[i];
 } 
 
 void FFUpdates::print_SHA256(){

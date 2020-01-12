@@ -61,6 +61,9 @@ class FFUpdates{
 
         /**
          * Sets the user token.
+         * 
+         * @param user_token
+         *        Token provided to the user on their profile page.
          */ 
         void set_user_token(String user_token);
 
@@ -73,6 +76,9 @@ class FFUpdates{
 
         /**
          * Sets the device token.
+         * 
+         * @param user_secret
+         *        Secret provided to user on their profile page.
          */ 
         void set_user_secret(String user_secret);
 
@@ -85,8 +91,11 @@ class FFUpdates{
 
         /**
          * Sets the token_SHA256 hash.
+         * 
+         * @param token_SHA256
+         *        Previously calculated SHA256 hash of the user token and user secret.
          */ 
-        void set_token_SHA256(String user_token);
+        void set_token_SHA256(String token_SHA256);
 
         /**
          * Prints the sha256 has that the device has calculated. Meant more for debugging than for user usage.
@@ -96,14 +105,14 @@ class FFUpdates{
         /**
          * Gets the encryption key. Please note that you should iterate through this pointer and store the values
          * as a byte array. Storing this pointer in memory will not preserve the data through a reset as the 
-         * pointer will be pointing to empty memory. The length of the key is 17.
+         * pointer will be pointing to empty memory. The length of the key is 33.
          * 
-         * @return encryption key pointer
+         * @return encryption key byte array pointer
          */
         byte* get_encryption_key();
 
         /**
-         * Sets the encryption key.
+         * Sets the encryption key. The array passed should be of length 33.
          * 
          * @param key byte array pointer.
          */
@@ -118,8 +127,11 @@ class FFUpdates{
 
         /**
          * Sets the current server fingerprint.
-         */ 
-        void set_fingerprint(String user_token);
+         * 
+         * @param fingerprint
+         *        last known valid fingerprint of the SSL cert.
+         */         
+        void set_fingerprint(String fingerprint);
 
         /**
          * Asks the server for it's ssl certificate's sha1 fingerprint.
