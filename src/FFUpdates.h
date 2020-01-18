@@ -14,10 +14,18 @@ class FFUpdates{
         String token_SHA256;
         byte key[33];
         const char* update_host = "firmwareforge.com";             
-        const char* update_url = "/devices/update";
-        const char* finger_url = "/devices/fingerprint";
-        const int https_port = 443;                          
+        const char* update_url = "https://firmwareforge.com/devices/update";
+        const char* finger_url = "/devices/fingerprint";                        
         bool debug = false;
+
+        /**
+         * Handles the actual update operation. Connects to the server, flashes the firmware and such.
+         * Will return true if we were able to connect to the server and no issues were experienced.
+         * Otherwise we will return false so that we know we need to update the certificate fingerprint.
+         * 
+         * @return update success
+         */ 
+        bool handle_update();
         
     public:
 
@@ -155,7 +163,7 @@ class FFUpdates{
          * its business as usual. 
          * 
          * The user is required to determine the update interval. For instance, if you want to check for an update 5 times an hour, then
-         * you would need to implement a clock function that calles update 5 times an hour.
+         * you would need to implement a clock function that calls update 5 times an hour.
          */
         void update();
 };
