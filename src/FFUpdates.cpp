@@ -1,5 +1,5 @@
 #include "FFUpdates.h"
-#include <WiFiClientSecure.h>
+#include <bearssl/bearssl.h>
 #include <ESP8266httpUpdate.h>
 #include <SHA256.h>
 #include "aes.hpp"
@@ -83,7 +83,7 @@ void FFUpdates::print_SHA256(){
 }
 
 void FFUpdates::renewFingerprint(){
-    WiFiClientSecure client; 
+    BearSSL::WiFiClientSecure client; 
     String message, buffer, challenge_token, new_fingerprint, iv;
     byte iv_int[33], challenge_token_int[65]; // the strings are 32 and 64 chars long, but save a space for the null terminator
 
@@ -92,8 +92,8 @@ void FFUpdates::renewFingerprint(){
         Serial.println(FFUpdates::update_host);
     }
     
-    client.setInsecure(); // allows us to connect without verifying the fingerprint.   // UNCOMMENT
-    if (!client.connect(FFUpdates::update_host, FFUpdates::https_port)) {
+    client.setInsecure(); // allows us to connect without verifying the fingerprint.
+    if (!client.connect(FFUpdates::update_host, 443)) {
         Serial.println("connection failed");
         return; // we failed, nothing else to do.
     }
@@ -183,38 +183,34 @@ void FFUpdates::renewFingerprint(){
 }
 
 void FFUpdates::update(){
-    // test the connnection
-    t_httpUpdate_return ret = ESPhttpUpdate.update(FFUpdates::update_host,
-                                        FFUpdates::https_port,
-                                        FFUpdates::update_url,
-                                        FFUpdates::user_token,
-                                        FFUpdates::fingerprint);
-    switch(ret) {
-    case HTTP_UPDATE_FAILED:
-        Serial.println("Update failed, attempting to renew server fingerprint.");
+    if(FFUpdates::fingerprint == "") FFUpdates::renewFingerprint(); // get the current fingerprint if this is our first run.
+
+    if(!FFUpdates::handle_update()){
+        Serial.println("Updated failed, renewing fingerprint.");
         FFUpdates::renewFingerprint();
-        ret = ESPhttpUpdate.update(FFUpdates::update_host,
-                                        FFUpdates::https_port,
-                                        FFUpdates::update_url,
-                                        FFUpdates::user_token,
-                                        FFUpdates::fingerprint);
-        switch(ret) {
-        case HTTP_UPDATE_FAILED:
-            Serial.println("Update failed, aborting.");
-            break;
-        case HTTP_UPDATE_NO_UPDATES:
-            Serial.println("No update needed.");
-            break;
-        case HTTP_UPDATE_OK:
-            Serial.println("[update] Update ok."); // may not be called since we reboot the ESP
-            break;
-        }
-        break;
+        if(!FFUpdates::handle_update()) Serial.println("Updated failed.");
+    }
+    
+}
+
+bool FFUpdates::handle_update(){
+    BearSSL::WiFiClientSecure client;
+    client.setFingerprint(FFUpdates::fingerprint.c_str());
+     
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, FFUpdates::update_url, FFUpdates::user_token);
+    Serial.println(ESPhttpUpdate.getLastErrorString());
+    switch(ret){
+    case HTTP_UPDATE_FAILED:
+        Serial.println("Firmware update failed.");
+        return false;
     case HTTP_UPDATE_NO_UPDATES:
         Serial.println("No update needed.");
-        break;
+        return true;
     case HTTP_UPDATE_OK:
         Serial.println("[update] Update ok."); // may not be called since we reboot the ESP
+        return true;
+    default:
+        return false;
         break;
     }
 }
