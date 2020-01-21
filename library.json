@@ -31,7 +31,6 @@
 			"docs",
 			"Doxyfile",
 			"platform.ini",
-		        "library.json",
 			".travis.yml",
 			".readthedocs.yml",
 			".gitignore"
