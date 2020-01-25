@@ -6,13 +6,13 @@ All major changes made to the FFUpdates Library that resulted in a version incre
 
 ### Added
 
-  - Changelog
+-  Changelog
 
 ### Changed
 
-  - Moved to BearSSL for SHA256 Hash calculation from Arduino Crypto
-  - Moved to BearSSL for AES256 crypto operations from tiny-AES-c
+-  Moved to BearSSL for SHA256 Hash calculation from Arduino Crypto
+-  Moved to BearSSL for AES256 crypto operations from tiny-AES-c
 
 ### Removed
 
-  - tiny-AES-c library header and c files
+-  tiny-AES-c library header and c files
