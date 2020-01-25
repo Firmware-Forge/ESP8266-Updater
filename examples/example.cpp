@@ -28,5 +28,5 @@ void setup() {
 void loop() {
     Serial.println("Checking for an update");
     updater.update(); // check for an update, apply it if one exists.
-    delay(5000);
+    delay(5000);  // check once every 5 seconds.
 }
