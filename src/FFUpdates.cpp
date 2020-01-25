@@ -1,7 +1,7 @@
 #include "FFUpdates.h"
 #include <bearssl/bearssl.h>
+#include <bearssl/bearssl_hash.h>
 #include <ESP8266httpUpdate.h>
-#include <SHA256.h>
 #include "aes.hpp"
 
 FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SHA256{"Not Set"}{
@@ -9,18 +9,19 @@ FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SH
 }
 
 FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_token}, user_secret{user_secret}{
-    SHA256 token_hash;
-    uint8_t value[32];
+    br_sha256_context ctx;
+    uint8_t outputbuf[32];
     String expect = ""; // wipe it for reuse
 
-    token_hash.reset();
-    token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
-    token_hash.update(user_secret.c_str(), strlen(user_secret.c_str()));
-    token_hash.finalize(value, 32);
+    // calculate sha256 using BearSSL builtins.
+    br_sha256_init(&ctx);
+    br_sha256_update(&ctx, user_token.c_str(), 32);
+    br_sha256_update(&ctx, user_secret.c_str(), 32);
+    br_sha256_out(&ctx, outputbuf);
 
     for(int i = 0; i < 32; i ++){
-        if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
-        else expect += String(value[i], HEX);
+        if(outputbuf[i] < 16) expect += ("0" + String(outputbuf[i], HEX)); // ensures we use two hex values to represent each block
+        else expect += String(outputbuf[i], HEX);
     }
     FFUpdates::token_SHA256 = expect;
 
@@ -36,6 +37,7 @@ FFUpdates::~FFUpdates(){
 
 void FFUpdates::enable_debug(bool debug){
     FFUpdates::debug = debug;
+    Serial.println(FFUpdates::version);
 }
 
 String FFUpdates::get_user_token(){

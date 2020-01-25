@@ -15,7 +15,8 @@ class FFUpdates{
         byte key[33];
         const char* update_host = "firmwareforge.com";             
         const char* update_url = "https://firmwareforge.com/devices/update";
-        const char* finger_url = "/devices/fingerprint";                        
+        const char* finger_url = "/devices/fingerprint";
+        const char* version = "0.33a";                    
         bool debug = false;
 
         /**
@@ -28,7 +29,6 @@ class FFUpdates{
         bool handle_update();
         
     public:
-
         /**
          * Default Constructor for the FFUpdates class. Creates the object but does not intialize any data.
          * Requires the user to provide the token_SHA256 and user_token via the set methods.
