@@ -12,15 +12,9 @@
 		"url": "https://patrick-shinn.com",
 		"maintainer": true
   	},
-	"version": "0.32a",
+	"version": "0.33a",
 	"platforms": "espressif8266",
 	"frameworks": "arduino",
-	"dependencies":[
-		{
-			"name": "Crypto",
-			"frameworks": "arduino"
-		}
-	],
 	"export": {
 		"include":[
 			"src",

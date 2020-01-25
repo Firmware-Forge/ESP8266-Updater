@@ -10,12 +10,12 @@ class FFUpdates{
     private:
         String user_token;
         String user_secret;
-        String fingerprint = "";
         String token_SHA256;
-        byte key[33];
+        String fingerprint = "";
         const char* update_host = "firmwareforge.com";             
         const char* update_url = "https://firmwareforge.com/devices/update";
-        const char* finger_url = "/devices/fingerprint";                        
+        const char* finger_url = "/devices/fingerprint";
+        const char* version = "0.33a";                    
         bool debug = false;
 
         /**
@@ -28,7 +28,6 @@ class FFUpdates{
         bool handle_update();
         
     public:
-
         /**
          * Default Constructor for the FFUpdates class. Creates the object but does not intialize any data.
          * Requires the user to provide the token_SHA256 and user_token via the set methods.
@@ -109,22 +108,6 @@ class FFUpdates{
          * Prints the sha256 has that the device has calculated. Meant more for debugging than for user usage.
          */
         void print_SHA256();
-
-        /**
-         * Gets the encryption key. Please note that you should iterate through this pointer and store the values
-         * as a byte array. Storing this pointer in memory will not preserve the data through a reset as the 
-         * pointer will be pointing to empty memory. The length of the key is 33.
-         * 
-         * @return encryption key byte array pointer
-         */
-        byte* get_encryption_key();
-
-        /**
-         * Sets the encryption key. The array passed should be of length 33.
-         * 
-         * @param key byte array pointer.
-         */
-        void set_encryption_key(byte* key);
 
         /**
          * Gets the stored server fingerprint. 

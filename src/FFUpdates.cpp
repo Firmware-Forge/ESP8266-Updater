@@ -1,41 +1,59 @@
 #include "FFUpdates.h"
 #include <bearssl/bearssl.h>
+#include <bearssl/bearssl_block.h>
+#include <bearssl/bearssl_hash.h>
 #include <ESP8266httpUpdate.h>
-#include <SHA256.h>
-#include "aes.hpp"
 
 FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SHA256{"Not Set"}{
   // do nothing, variables are initialized in the initialization list
 }
 
 FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_token}, user_secret{user_secret}{
-    SHA256 token_hash;
-    uint8_t value[32];
+    br_sha256_context ctx;
+    uint8_t outputbuf[32];
     String expect = ""; // wipe it for reuse
 
-    token_hash.reset();
-    token_hash.update(user_token.c_str(), strlen(user_token.c_str()));
-    token_hash.update(user_secret.c_str(), strlen(user_secret.c_str()));
-    token_hash.finalize(value, 32);
+    // calculate sha256 using BearSSL builtins.
+    br_sha256_init(&ctx);
+    br_sha256_update(&ctx, user_token.c_str(), 32);
+    br_sha256_update(&ctx, user_secret.c_str(), 32);
+    br_sha256_out(&ctx, outputbuf);
 
     for(int i = 0; i < 32; i ++){
-        if(value[i] < 16) expect += ("0" + String(value[i], HEX)); // ensures we use two hex values to represent each block
-        else expect += String(value[i], HEX);
+        if(outputbuf[i] < 16) expect += ("0" + String(outputbuf[i], HEX)); // ensures we use two hex values to represent each block
+        else expect += String(outputbuf[i], HEX);
     }
     FFUpdates::token_SHA256 = expect;
-
-    // create the encryption key
-    user_secret = ""; // wipe this for reuse
-    for(int i = 0; i < 32; i++) user_secret += FFUpdates::user_secret[i]; // get the first 32 chars
-    user_secret.toCharArray((char*)&key, user_secret.length() + 1);
 }
 
 FFUpdates::~FFUpdates(){
-    //todo implement?
+    // Handled by the compiler
 }
 
 void FFUpdates::enable_debug(bool debug){
     FFUpdates::debug = debug;
+    Serial.println("============================================");
+    Serial.print("Firmware Forge Updates Library version ");
+    Serial.println(FFUpdates::version);
+    Serial.println("--------------------------------------------");
+    Serial.println("|                                          |");
+    Serial.println("|        ## ###   ##(((        //          |");
+    Serial.println("|             ##  ((((((((((((////         |");
+    Serial.println("|           # ##   (((((#                  |");
+    Serial.println("|             # (( ((((((                  |");
+    Serial.println("|                                          |");
+    Serial.println("|      ######((((((((((((/////////////     |");
+    Serial.println("|      #####((((((((((((////////////       |");
+    Serial.println("|        ##((((((((((((/////////           |");
+    Serial.println("|            ((((((((//////////            |");
+    Serial.println("|                (((//////////             |");
+    Serial.println("|            ((((((///////////////         |");
+    Serial.println("|            (((((////////////////         |");
+    Serial.println("|                                          |");
+    Serial.println("--------------------------------------------");
+    if(debug) Serial.println("Debug Enabled");
+    else Serial.println("Debug Disabled");
+    Serial.println("============================================");
 }
 
 String FFUpdates::get_user_token(){
@@ -70,14 +88,6 @@ void FFUpdates::set_fingerprint(String fingerprint){
     FFUpdates::fingerprint = fingerprint;
 }
 
-byte* FFUpdates::get_encryption_key(){
-    return key;
-}
-
-void FFUpdates::set_encryption_key(byte* key){
-    for(int i = 0; i < 33; i ++) FFUpdates::key[i] = key[i];
-} 
-
 void FFUpdates::print_SHA256(){
     Serial.println(FFUpdates::token_SHA256);
 }
@@ -85,7 +95,8 @@ void FFUpdates::print_SHA256(){
 void FFUpdates::renewFingerprint(){
     BearSSL::WiFiClientSecure client; 
     String message, buffer, challenge_token, new_fingerprint, iv;
-    byte iv_int[33], challenge_token_int[65]; // the strings are 32 and 64 chars long, but save a space for the null terminator
+    byte iv_int[16]; // iv from the server comes as 32 chars, but is hex, so actual length is 16. 
+    byte challenge_token_int[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
 
     if(FFUpdates::debug){
         Serial.print("connecting to ");
@@ -147,6 +158,7 @@ void FFUpdates::renewFingerprint(){
         value[1] = challenge_token[i + 1];
         challenge_token_int[index] = strtol(value, NULL, 16);
     }
+    
     index = 0;
     for(uint i = 0; i < iv.length(); i += 2, index ++){
         char value[2];
@@ -154,11 +166,11 @@ void FFUpdates::renewFingerprint(){
         value[1] = iv[i + 1];
         iv_int[index] = strtol(value, NULL, 16);
     }
-
+    
     // decrypt the message
-    AES_ctx ctx;
-    AES_init_ctx_iv(&ctx, FFUpdates::key, iv_int);
-    AES_CBC_decrypt_buffer(&ctx, challenge_token_int, 64);
+    br_aes_ct_cbcdec_keys ctx;
+    br_aes_ct_cbcdec_init(&ctx, FFUpdates::user_secret.c_str(), 32);
+    br_aes_ct_cbcdec_run(&ctx, iv_int, challenge_token_int, 64);
 
     challenge_token = ""; // wipe and populate with the decrypted value
     for(uint i = 0; i < 64; i++){
@@ -198,7 +210,6 @@ bool FFUpdates::handle_update(){
     client.setFingerprint(FFUpdates::fingerprint.c_str());
      
     t_httpUpdate_return ret = ESPhttpUpdate.update(client, FFUpdates::update_url, FFUpdates::user_token);
-    Serial.println(ESPhttpUpdate.getLastErrorString());
     switch(ret){
     case HTTP_UPDATE_FAILED:
         Serial.println("Firmware update failed.");
