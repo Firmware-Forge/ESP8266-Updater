@@ -98,8 +98,8 @@ void FFUpdates::renewFingerprint(){
     BearSSL::WiFiClientSecure client;
 
     String message, buffer, challenge_token, new_fingerprint, iv;
-    byte iv_int[16]; // iv from the server comes as 32 chars, but is hex, so actual length is 16. 
-    byte challenge_token_int[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
+    // byte iv_int[16]; // iv from the server comes as 32 chars, but is hex, so actual length is 16. 
+    // byte challenge_token_int[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
 
     if(FFUpdates::debug){
         Serial.print("connecting to ");
@@ -112,10 +112,10 @@ void FFUpdates::renewFingerprint(){
         return; // we failed, nothing else to do.
     }
    
-    // if (!client.connect(FFUpdates::update_host, 8000)) {
-    //     Serial.println("connection failed");
-    //     return; // we failed, nothing else to do.
-    // }
+    if (!client.connect(FFUpdates::update_host, 8000)) {
+        Serial.println("connection failed");
+        return; // we failed, nothing else to do.
+    }
     
     if (FFUpdates::debug){
         Serial.print("requesting URL: ");
@@ -136,7 +136,7 @@ void FFUpdates::renewFingerprint(){
     
     int found = 0;
         for(unsigned int i = 0; i < message.length(); i++){
-            if(found > 3) break;  // once we find all that we care about, end.
+            if(found > 2) break;  // once we find all that we care about, end.
             if (message[i] != '\n') buffer += message[i];
             else{
             if(buffer.startsWith("iv")){ 
@@ -159,33 +159,35 @@ void FFUpdates::renewFingerprint(){
         }
 
     // convert the hex values we got from the server into uints and place them in the arrays.
-    int index = 0;
-    for(uint i = 0; i < challenge_token.length(); i += 2, index ++){
-        char value[2];
-        value[0] = challenge_token[i];
-        value[1] = challenge_token[i + 1];
-        challenge_token_int[index] = strtol(value, NULL, 16);
-    }
+    // int index = 0;
+    // for(uint i = 0; i < challenge_token.length(); i += 2, index ++){
+    //     char value[2];
+    //     value[0] = challenge_token[i];
+    //     value[1] = challenge_token[i + 1];
+    //     challenge_token_int[index] = strtol(value, NULL, 16);
+    // }
     
-    index = 0;
-    for(uint i = 0; i < iv.length(); i += 2, index ++){
-        char value[2];
-        value[0] = iv[i];
-        value[1] = iv[i + 1];
-        iv_int[index] = strtol(value, NULL, 16);
-    }
+    // index = 0;
+    // for(uint i = 0; i < iv.length(); i += 2, index ++){
+    //     char value[2];
+    //     value[0] = iv[i];
+    //     value[1] = iv[i + 1];
+    //     iv_int[index] = strtol(value, NULL, 16);
+    // }
     
-    // decrypt the message
-    br_aes_ct_cbcdec_keys ctx;
-    br_aes_ct_cbcdec_init(&ctx, FFUpdates::user_secret.c_str(), 32);
-    br_aes_ct_cbcdec_run(&ctx, iv_int, challenge_token_int, 64);
+    // // decrypt the message
+    // br_aes_big_ctrcbc_keys bctx;
+    // br_eax_context ctx;
+    // br_aes_big_ctrcbc_init(&bctx, FFUpdates::user_secret.c_str(), 32);
+    // br_eax_init(&ctx, &bctx);
+    // br_eax_run(&ctx, false, challenge_token_int, 64);
 
-    challenge_token = ""; // wipe and populate with the decrypted value
-    for(uint i = 0; i < 64; i++){
-            char current = (char)challenge_token_int[i];
-            if(isControl(current) || !isPrintable(current)) break;
-            else challenge_token += current;
-    }
+    // challenge_token = ""; // wipe and populate with the decrypted value
+    // for(uint i = 0; i < 64; i++){
+    //         char current = (char)challenge_token_int[i];
+    //         if(isControl(current) || !isPrintable(current)) break;
+    //         else challenge_token += current;
+    // }
 
     // calculate the sha256 hash for verifying that the fingerprint was not tampered with
     br_sha256_context hash_ctx;
