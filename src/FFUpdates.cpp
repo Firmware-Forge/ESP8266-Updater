@@ -93,7 +93,10 @@ void FFUpdates::print_SHA256(){
 }
 
 void FFUpdates::renewFingerprint(){
-    BearSSL::WiFiClientSecure client; 
+
+    // WiFiClient client;
+    BearSSL::WiFiClientSecure client;
+
     String message, buffer, challenge_token, new_fingerprint, iv;
     byte iv_int[16]; // iv from the server comes as 32 chars, but is hex, so actual length is 16. 
     byte challenge_token_int[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
@@ -102,16 +105,21 @@ void FFUpdates::renewFingerprint(){
         Serial.print("connecting to ");
         Serial.println(FFUpdates::update_host);
     }
-    
+
     client.setInsecure(); // allows us to connect without verifying the fingerprint.
     if (!client.connect(FFUpdates::update_host, 443)) {
         Serial.println("connection failed");
         return; // we failed, nothing else to do.
     }
-
+   
+    // if (!client.connect(FFUpdates::update_host, 8000)) {
+    //     Serial.println("connection failed");
+    //     return; // we failed, nothing else to do.
+    // }
+    
     if (FFUpdates::debug){
         Serial.print("requesting URL: ");
-        Serial.println(FFUpdates::update_url);
+        Serial.println(FFUpdates::finger_url);
     }
 
     client.print(String("GET ") + FFUpdates::finger_url + " HTTP/1.1\r\n" +
@@ -120,9 +128,9 @@ void FFUpdates::renewFingerprint(){
 
     if(FFUpdates::debug) Serial.println("request sent");
     
-    while (client.connected()) {
-        message = client.readString();
-    }
+   
+    message = client.readString();
+    
 
     if(FFUpdates::debug) Serial.println(message); // what we got back from the server
     
@@ -179,7 +187,22 @@ void FFUpdates::renewFingerprint(){
             else challenge_token += current;
     }
 
-    if (FFUpdates::token_SHA256 == challenge_token){  // if the current token hash equals the one the server replied with
+    // calculate the sha256 hash for verifying that the fingerprint was not tampered with
+    br_sha256_context hash_ctx;
+    uint8_t outputbuf[32];
+    String expected = ""; // wipe it for reuse
+
+    br_sha256_init(&hash_ctx);
+    br_sha256_update(&hash_ctx, FFUpdates::token_SHA256.c_str(), 64);
+    br_sha256_update(&hash_ctx, new_fingerprint.c_str(), 59);
+    br_sha256_out(&hash_ctx, outputbuf);
+
+    for(int i = 0; i < 32; i ++){
+        if(outputbuf[i] < 16) expected += ("0" + String(outputbuf[i], HEX)); // ensures we use two hex values to represent each block
+        else expected += String(outputbuf[i], HEX);
+    }
+
+    if (expected == challenge_token){  // if the current token hash equals the one the server replied with
         Serial.println("Fingerprint updated!");     // update the fingerprint
         FFUpdates::fingerprint = new_fingerprint;
         if(FFUpdates::debug) Serial.println(fingerprint);
@@ -189,7 +212,7 @@ void FFUpdates::renewFingerprint(){
             Serial.print("Challenge token: ");
             Serial.println(challenge_token);
             Serial.print("Excpected token: ");
-            Serial.println(FFUpdates::token_SHA256);
+            Serial.println(expected);
         }
     }
 }
