@@ -26,6 +26,45 @@ class FFUpdates{
          * @return update success
          */ 
         bool handle_update();
+
+        /**
+         * Converts an array of bytes into the equivalent hex string.
+         * 
+         * @param array
+         *        Byte array to convert
+         * 
+         * @param length
+         *        length of the byte array  
+         * 
+         * @return hex string
+         */ 
+        String bytes_to_hex(byte* array, size_t length);
+
+        /**
+         * Converts an array of bytes into the equivalent hex string, starting at a specified position in the array.
+         * 
+         * @param array
+         *        Byte array to convert
+         * 
+         * @param length
+         *        length of the byte array 
+         * 
+         * @param starting_pos
+         *        position to start the hex conversion at 
+         * 
+         * @return hex string
+         */ 
+        String bytes_to_hex(byte* array, size_t length, uint8 starting_pos);
+
+        /**
+         * Converts a hex array to an array of bytes.
+         * 
+         * @param hex
+         *        The hex string to convert to bytes
+         * @param buffer
+         *        buffer to write the byte array to. This should be half the length of the hex string.
+         */
+        void hex_to_bytes(String hex, byte* buffer);
         
     public:
         /**
@@ -139,7 +178,7 @@ class FFUpdates{
          * This function has been left as public so that the user can call this if they ever choose to, although there is really no
          * reason to.
          */
-        void renewFingerprint();
+        void renew_fingerprint();
 
         /**
          * Checks to see if there is an update available for the device. If there is, the update is downloaded and applied. Otherwise,
@@ -149,4 +188,12 @@ class FFUpdates{
          * you would need to implement a clock function that calls update 5 times an hour.
          */
         void update();
+
+        /**
+         * 
+         */
+
+        /**
+         * 
+         */ 
 };

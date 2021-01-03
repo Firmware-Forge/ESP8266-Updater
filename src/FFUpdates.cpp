@@ -92,7 +92,7 @@ void FFUpdates::print_SHA256(){
     Serial.println(FFUpdates::token_SHA256);
 }
 
-void FFUpdates::renewFingerprint(){
+void FFUpdates::renew_fingerprint(){
 
     WiFiClient client;
     // BearSSL::WiFiClientSecure client;
@@ -101,9 +101,17 @@ void FFUpdates::renewFingerprint(){
     br_aes_gen_ctrcbc_keys keys;
     br_eax_context eax_context;
 
-    String message, buffer, challenge_token, new_fingerprint, iv;
-    byte iv_int[16]; // iv from the server comes as 32 chars, but is hex, so actual length is 16. 
-    byte challenge_token_int[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
+    String message;
+    String buffer;
+    String challenge_token;
+    String new_fingerprint;
+    String nonce;
+    String tag;
+    String calculated_tag_str;
+    byte nonce_bytes[16];           // nonce from the server comes as 32 chars, but is hex, so actual length is 16. 
+    byte challenge_token_bytes[80]; // the challenge token from the server is 160 chars long, but is hex, so actual size is 80.
+    byte tag_bytes[16];             // tag from the server comes as 32 chars, but is hex, so actual length is 16.
+    byte calculated_tag[16]; 
 
 
     if(FFUpdates::debug){
@@ -138,12 +146,12 @@ void FFUpdates::renewFingerprint(){
     
     int found = 0;
         for(unsigned int i = 0; i < message.length(); i++){
-            if(found > 3) break;  // once we find all that we care about, end.
+            if(found > 4) break;  // once we find all that we care about, end.
             if (message[i] != '\n') buffer += message[i];
             else{
-                if(buffer.startsWith("iv")){ 
-                    iv = buffer.substring(4);
-                    iv.remove(iv.length() - 1);
+                if(buffer.startsWith("nonce")){ 
+                    nonce = buffer.substring(7);
+                    nonce.remove(nonce.length() - 1);
                     found++;
                 }
                 else if(buffer.startsWith("sha-1")){ 
@@ -156,36 +164,31 @@ void FFUpdates::renewFingerprint(){
                     challenge_token.remove(challenge_token.length() - 1);
                     found ++;
                 }
+                else if(buffer.startsWith("tag")){
+                    tag = buffer.substring(5);
+                    tag.remove(tag.length() - 1);
+                    found ++;
+                } 
                 buffer = ""; // reset buffer for next run
             }
         }
     if(FFUpdates::debug) Serial.println(message); // what we got back from the server
     // convert the hex values we got from the server into uints and place them in the arrays.
-    int index = 0;
-    for(uint i = 0; i < challenge_token.length(); i += 2, index ++){
-        char value[2];
-        value[0] = challenge_token[i];
-        value[1] = challenge_token[i + 1];
-        challenge_token_int[index] = strtol(value, NULL, 16);
-    }
-    index = 0;
-    for(uint i = 0; i < iv.length(); i += 2, index ++){
-        char value[2];
-        value[0] = iv[i];
-        value[1] = iv[i + 1];
-        iv_int[index] = strtol(value, NULL, 16);
-    }
+    FFUpdates::hex_to_bytes(challenge_token, challenge_token_bytes);
+    FFUpdates::hex_to_bytes(nonce, nonce_bytes);
+    FFUpdates::hex_to_bytes(tag, tag_bytes);
     
     // // decrypt the message
     br_aes_big_ctrcbc_vtable.init(&keys.vtable, FFUpdates::user_secret.c_str(), 32);
     br_eax_init(&eax_context, &keys.vtable);
-    br_eax_reset(&eax_context, iv_int, 16);
+    br_eax_reset(&eax_context, nonce_bytes, 16);
     br_eax_flip(&eax_context);
-    br_eax_run(&eax_context, false, challenge_token_int, 64);
+    br_eax_run(&eax_context, false, challenge_token_bytes, 64);
+    br_eax_get_tag(&eax_context, calculated_tag);
 
     challenge_token = ""; // wipe and populate with the decrypted value
     for(uint i = 0; i < 64; i++){
-            char current = (char)challenge_token_int[i];
+            char current = (char)challenge_token_bytes[i];
             if(isControl(current) || !isPrintable(current)) break;
             else challenge_token += current;
     }
@@ -200,12 +203,11 @@ void FFUpdates::renewFingerprint(){
     br_sha256_update(&hash_ctx, new_fingerprint.c_str(), 59);
     br_sha256_out(&hash_ctx, outputbuf);
 
-    for(int i = 0; i < 32; i ++){
-        if(outputbuf[i] < 16) expected += ("0" + String(outputbuf[i], HEX)); // ensures we use two hex values to represent each block
-        else expected += String(outputbuf[i], HEX);
-    }
+    expected = FFUpdates::bytes_to_hex(outputbuf, 32);
+    calculated_tag_str = bytes_to_hex(calculated_tag, 32, 16);
 
-    if (expected == challenge_token){  // if the current token hash equals the one the server replied with
+    // if the current token hash equals the one the server replied with and the tags match
+    if (expected == challenge_token && calculated_tag_str == tag){  
         Serial.println("Fingerprint updated!");     // update the fingerprint
         FFUpdates::fingerprint = new_fingerprint;
         if(FFUpdates::debug) Serial.println(fingerprint);
@@ -216,16 +218,20 @@ void FFUpdates::renewFingerprint(){
             Serial.println(challenge_token);
             Serial.print("Excpected token: ");
             Serial.println(expected);
+            Serial.print("Calculated tag: ");
+            Serial.println(calculated_tag_str);
+            Serial.print("Excpected tag: ");
+            Serial.println(tag);
         }
     }
 }
 
 void FFUpdates::update(){
-    if(FFUpdates::fingerprint == "") FFUpdates::renewFingerprint(); // get the current fingerprint if this is our first run.
+    if(FFUpdates::fingerprint == "") FFUpdates::renew_fingerprint(); // get the current fingerprint if this is our first run.
 
     if(!FFUpdates::handle_update()){
         Serial.println("Updated failed, renewing fingerprint.");
-        FFUpdates::renewFingerprint();
+        FFUpdates::renew_fingerprint();
         if(!FFUpdates::handle_update()) Serial.println("Updated failed.");
     }
     
@@ -249,5 +255,33 @@ bool FFUpdates::handle_update(){
     default:
         return false;
         break;
+    }
+}
+
+String FFUpdates::bytes_to_hex(byte* array, size_t length){
+    String hex = "";
+    for(uint i = 0; i < length; i ++){
+        if(array[i] < 16) hex += ("0" + String(array[i], HEX)); // ensures we use two hex values to represent each block
+        else hex += String(array[i], HEX);
+    }
+    return hex;
+}
+
+String FFUpdates::bytes_to_hex(byte* array, size_t length, uint8 starting_pos){
+    String hex = "";
+    for(uint i = starting_pos; i < length; i ++){
+        if(array[i] < 16) hex += ("0" + String(array[i], HEX)); // ensures we use two hex values to represent each block
+        else hex += String(array[i], HEX);
+    }
+    return hex;
+}
+
+void FFUpdates::hex_to_bytes(String hex, byte* buffer){
+    int index = 0;
+    for(uint i = 0; i < hex.length(); i += 2, index ++){
+        char value[2];
+        value[0] = hex[i];
+        value[1] = hex[i + 1];
+        buffer[index] = strtol(value, NULL, 16);
     }
 }
