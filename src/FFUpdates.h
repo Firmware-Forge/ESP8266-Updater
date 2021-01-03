@@ -12,7 +12,7 @@ class FFUpdates{
         String user_secret;
         String token_SHA256;
         String fingerprint = "";
-        const char* update_host = "api.firmwareforge.com";             
+        const char* update_host = "192.168.1.30";             
         const char* update_url = "https://api.firmwareforge.com/devices/update/";
         const char* finger_url = "/devices/fingerprint/";
         const char* version = "0.33a";                    
