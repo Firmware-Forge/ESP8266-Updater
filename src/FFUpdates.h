@@ -65,6 +65,17 @@ class FFUpdates{
          *        buffer to write the byte array to. This should be half the length of the hex string.
          */
         void hex_to_bytes(String hex, byte* buffer);
+
+        /**
+         * CRC calculation utility fucntion
+         * 
+         * @param data
+         *        pointer to the data to calculate CRC over
+         * @param length
+         *        size of the data
+         * @returns CRC of the data
+         */ 
+        uint32_t caculate_CRC32(const uint8_t *data, size_t length);
         
     public:
         /**
@@ -89,6 +100,18 @@ class FFUpdates{
          * Destructor for the FFUpdates class.
          */
         ~FFUpdates();
+
+        /**
+         * Utility function for manually caluting the user hash.
+         * 
+         * @param user_token
+         *        Firmware Forge User Token
+         * @param user_secret
+         *        Firmware Forge User Secret
+         * @returns calculated SHA256 hash
+         * 
+         */ 
+        String calculate_sha256(String user_token, String user_secret);
 
         /**
          * Enable/disable debug.
@@ -190,10 +213,49 @@ class FFUpdates{
         void update();
 
         /**
-         * 
+         * Saves the updater data structure to rtc memory,
+         * should be called prior to puting the ESP into deep sleep.
          */
+        void save_to_rtc();
 
         /**
+         * Saves the updater data structure as well as the passed user data structure to rtc memory,
+         * should be called prior to puting the ESP into deep sleep. CRC validation is provided by this
+         * function for the user data, so there is no need to calculate it and store it in the user data
+         * structure. The size of the user data stucture must be a multplie of 4.
          * 
-         */ 
+         * @param user_data
+         *        pointer to a user specified struct containing user data that needs to be persisted across deep sleep.
+         * 
+         * @param length
+         *        length in bytes of the user data structure.
+         */
+        void save_to_rtc(void* user_data, size_t length);
+
+        /**
+         * Restores the updater's data from rtc memory.
+         * 
+         * @returns true if data is restored succesfully (data is found and passes crc validation)
+         */
+        bool restore_rtc_data();
+
+        /**
+         * Restores the updater's data from rtc memory as well as the user's data.
+         * 
+         * @param buffer
+         *        buffer to restore the user data to
+         * @returns true if data is restored succesfully (data is found and passes crc validation)
+         */
+        bool restore_rtc_data(void* buffer);
 };
+
+typedef struct{
+  // the size of this struct must be a multiple of 4
+  uint32_t crc32;        // 4 bytes
+  char token_SHA256[65]; // 65
+  char fingerprint[60];  // 60
+  int user_data_size;    // 4 bytes
+  uint32_t user_crc32;   // 4 bytes
+  char padding[3];       // 3 bytes
+                         // 140 bytes total, leaving 372 bytes for the user to use.
+} FFUpdatesRTCData;

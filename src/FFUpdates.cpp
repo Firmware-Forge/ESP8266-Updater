@@ -9,21 +9,7 @@ FFUpdates::FFUpdates() : user_token{"Not Set"}, user_secret{"Not Set"}, token_SH
 }
 
 FFUpdates::FFUpdates(String user_token, String user_secret) : user_token{user_token}, user_secret{user_secret}{
-    br_sha256_context ctx;
-    uint8_t outputbuf[32];
-    String expect = ""; // wipe it for reuse
-
-    // calculate sha256 using BearSSL builtins.
-    br_sha256_init(&ctx);
-    br_sha256_update(&ctx, user_token.c_str(), 32);
-    br_sha256_update(&ctx, user_secret.c_str(), 32);
-    br_sha256_out(&ctx, outputbuf);
-
-    for(int i = 0; i < 32; i ++){
-        if(outputbuf[i] < 16) expect += ("0" + String(outputbuf[i], HEX)); // ensures we use two hex values to represent each block
-        else expect += String(outputbuf[i], HEX);
-    }
-    FFUpdates::token_SHA256 = expect;
+   FFUpdates::token_SHA256 = FFUpdates::calculate_sha256(user_token, user_secret);
 }
 
 FFUpdates::~FFUpdates(){
@@ -284,4 +270,101 @@ void FFUpdates::hex_to_bytes(String hex, byte* buffer){
         value[1] = hex[i + 1];
         buffer[index] = strtol(value, NULL, 16);
     }
+}
+
+uint32_t calculateCRC32(const uint8_t *data, size_t length) {
+  uint32_t crc = 0xffffffff;
+  while(length--) {
+    uint8_t c = *data++;
+    for(uint32_t i = 0x80; i > 0; i >>= 1) {
+      bool bit = crc & 0x80000000;
+      if(c & i) {
+        bit = !bit;
+      }
+      crc <<= 1;
+      if(bit) {
+        crc ^= 0x04c11db7;
+      }
+    }
+  }
+  return crc;
+}
+
+void FFUpdates::save_to_rtc(){
+    FFUpdatesRTCData rtc_data;
+    strcpy(rtc_data.fingerprint, FFUpdates::fingerprint.c_str());
+    strcpy(rtc_data.token_SHA256, FFUpdates::token_SHA256.c_str());
+    rtc_data.user_data_size = 0;
+    rtc_data.user_crc32 = 0;
+    rtc_data.crc32 = calculateCRC32(((uint8_t*) &rtc_data) + 4, sizeof(rtc_data) - 4);
+    ESP.rtcUserMemoryWrite(0, (uint32_t*) &rtc_data, sizeof(rtc_data)); 
+}
+   
+void FFUpdates::save_to_rtc(void* user_data, size_t length){
+    FFUpdatesRTCData rtc_data;
+    // updater data
+    strcpy(rtc_data.fingerprint, FFUpdates::fingerprint.c_str());
+    strcpy(rtc_data.token_SHA256, FFUpdates::token_SHA256.c_str());
+    
+    // user data
+    rtc_data.user_data_size = length;
+    rtc_data.user_crc32 = calculateCRC32((uint8_t *) user_data, length);
+
+    // final crc
+    rtc_data.crc32 = calculateCRC32(((uint8_t*) &rtc_data) + 4, sizeof(rtc_data) - 4);
+    ESP.rtcUserMemoryWrite(0, (uint32_t*) &rtc_data, sizeof(rtc_data));
+    // the offset is in blocks of 4 bytes, account for that here
+    ESP.rtcUserMemoryWrite((sizeof(rtc_data)/4), (uint32_t*) user_data, length);
+}
+
+bool FFUpdates::restore_rtc_data(){
+    FFUpdatesRTCData rtc_data;
+    if(ESP.rtcUserMemoryRead(0, (uint32_t*) &rtc_data, sizeof(rtc_data))) {
+        // Calculate the CRC of what we just read from RTC memory, but skip the first 4 bytes as that's the checksum itself.
+        uint32_t crc = calculateCRC32( ((uint8_t*) &rtc_data) + 4, sizeof(rtc_data) - 4 );
+        if(crc == rtc_data.crc32){
+            Serial.println(crc);
+            Serial.println(rtc_data.crc32);
+            FFUpdates::set_fingerprint(rtc_data.fingerprint);
+            FFUpdates::set_token_SHA256(rtc_data.token_SHA256);
+            return true;
+        }
+    } 
+    return false;
+}
+   
+bool FFUpdates::restore_rtc_data(void* buffer){
+    FFUpdatesRTCData rtc_data;
+    if(ESP.rtcUserMemoryRead(0, (uint32_t*) &rtc_data, sizeof(rtc_data))) {
+        // Calculate the CRC of what we just read from RTC memory, but skip the first 4 bytes as that's the checksum itself.
+        uint32_t crc = calculateCRC32( ((uint8_t*) &rtc_data) + 4, sizeof(rtc_data) - 4 );
+        if(crc == rtc_data.crc32){
+            // restore updater data
+            FFUpdates::set_fingerprint(rtc_data.fingerprint);
+            FFUpdates::set_token_SHA256(rtc_data.token_SHA256);
+            
+            // crc of user data, do the crc of all of it because its crc was stored in the rtcdata struct
+            // the offset is in blocks of 4 bytes, account for that here
+            if(ESP.rtcUserMemoryRead((sizeof(rtc_data)/4), (uint32_t*) buffer, rtc_data.user_data_size)) {
+                crc = calculateCRC32( ((uint8_t*) buffer),  rtc_data.user_data_size);
+                if(crc == rtc_data.user_crc32) return true; // we have passed the crc check on both blocks of data, success.
+
+                else Serial.println("Failed at user data crc") ;
+            }else Serial.println("Failed at user data read") ;
+        }else Serial.println("Failed at rtc data crc") ;
+    } else Serial.println("Failed at rtc data read") ;
+    return false;
+}
+
+String FFUpdates::calculate_sha256(String user_token, String user_secret){
+    br_sha256_context ctx;
+    uint8_t outputbuf[32];
+    String expect = ""; // wipe it for reuse
+
+    // calculate sha256 using BearSSL builtins.
+    br_sha256_init(&ctx);
+    br_sha256_update(&ctx, user_token.c_str(), 32);
+    br_sha256_update(&ctx, user_secret.c_str(), 32);
+    br_sha256_out(&ctx, outputbuf);
+    return FFUpdates::bytes_to_hex(outputbuf, 32);
 }
